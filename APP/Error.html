@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='AI.png') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.0/css/bootstrap.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.0/js/bootstrap.min.js"></script>
+    <title>ChatGPT</title>
+    <style>
+    .ChatGPT{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+      @keyframes cursorBlink {
+        0% {
+          border-right-color: black;
+        }
+
+        to {
+          border-right-color: white;
+        }
+      }
+
+      #block {
+        border-width: 0;
+        border-style: solid;
+        border-color: black;
+        border-right-width: 8px;
+        white-space: pre-wrap;
+        animation: cursorBlink 0.1s ease-in-out infinite alternate;
+        width: 50px;
+      }
+    </style>
+  </head>
+  <body>
+      <center>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <img src="{{ url_for('static', filename='AI.png') }}" class="ChatGPT">
+          <br>
+          <br>
+          <h1> <span id="block"></span></h1>
+   </center>
+    <script>
+      const typedText = document.getElementById('block');
+
+      const textToType = 'ChatGPT is at capacity right now. \n\nPlease try again later.';
+      let currentIndex = 0;
+
+      // setTimeout API
+      function typeCharacter() {
+        typedText.innerHTML += textToType[currentIndex];
+        currentIndex += 1;
+
+        if (currentIndex < textToType.length) {
+          setTimeout(typeCharacter, 50);
+        }
+      }
+      typeCharacter();
+
+    </script>
+  </body>
+</html>
