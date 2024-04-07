@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+          <title>Sign In</title>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='OpenAI.png') }}">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.0/css/bootstrap.min.css">
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.0/js/bootstrap.min.js"></script>
+          <style>
+            h3{
+              background: linear-gradient(45deg, #4285F4, #34A853, #FBBC05, #EA4335, #10A8F3, #F0563E);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+            }
+            
+            .form-control {
+              width: 350px;
+              height: 45px;
+              border-radius: 12px;
+            }
+            .btn {
+      background: linear-gradient(white, white) padding-box,
+                  linear-gradient(45deg, #4285F4, #34A853, #FBBC05, #EA4335, #10A8F3, #F0563E) border-box;
+      border-radius: 24px;
+      width: 350px;
+      border: 12px solid linear-gradient(45deg, #4285F4, #34A853, #FBBC05, #EA4335, #10A8F3, #F0563E);
+    }
+    h {
+    position: relative; /* Add position relative to the original element */
+    background: linear-gradient(45deg, #4285F4, #34A853, #FBBC05, #EA4335, #10A8F3, #F0563E);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  h::before, h::after { /* Add pseudo-elements (before and after the content) */
+    content: '';
+    position: absolute;
+    width: 190px; /* Set the desired width for the text */
+    height: 35px;
+    background: inherit; /* Use the same background as the original element */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  h::before {
+    left: 0px;
+  }
+
+  h::after {
+    right: 0px;
+  }
+
+    
+   h:hover{
+      background: white;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .btn:hover {
+      background: linear-gradient(243deg, #4285F4, #34A853, #FBBC05, #EA4335, #10A8F3, #F0563E); /* Set the background color on hover */
+        }
+            .sign-up-form {
+              width: 400px;
+              height: 470px;
+              padding: 20px;
+              border-radius: 12px;
+              box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            }
+            .alredy-have-an-account-link {
+              text-decoration: none;
+              margin-top: 0;
+            }
+          </style>
+        </head>
+        <body>
+          <center>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <form action="/Sign_Up" method="POST" class="sign-up-form">
+              <br>
+              <img src="{{ url_for('static', filename='OpenAI.png') }}" width="70" height="70">&nbsp;
+              <h3>Sign Up</h3>
+              <br>
+              <br>
+              <input type="text" class="form-control" id="User_Name" name="User_Name" placeholder="User Name" required>
+              <br>
+              <input type="password" class="form-control" id="Password" name="Password" placeholder="Password" required>
+              <br>
+              <button type="submit" class="btn"><h>Sign Up</h></button>
+              <br>
+              <br>
+              <font class="text-secondary">Alredy have an Accout ? </font><a href="/Sign_In" class="alredy-have-an-account-link"><font class="text-success">Sign In</font></a>
+            </form>
+        </center>
+    </div>
+</body>
+</html>
