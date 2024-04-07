@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OpenAI AI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='AI.png') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/vs2015.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@openai/chat-completion"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js"></script>
+
+    <style>
+        /* Add rounded scrollbars to the entire website */
+        *::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        *::-webkit-scrollbar-track {
+          background-color: #f1f1f1;
+          border-radius: 8px;
+        }
+
+        *::-webkit-scrollbar-thumb {
+          background-color: #888;
+          border-radius: 8px;
+        }
+        /* Target the horizontal scrollbar */
+*::-webkit-scrollbar:horizontal {
+  background-color: #f1f1f1;
+  height: 8px;
+}
+
+/* Style the thumb of the horizontal scrollbar */
+*::-webkit-scrollbar-thumb:horizontal {
+  background-color: #888;
+  border-radius: 8px;
+}
+
+/* Style the thumb of the horizontal scrollbar on hover */
+*::-webkit-scrollbar-thumb:horizontal:hover {
+  background-color: #555;
+}
+
+/* Exclude any other elements with horizontal scrollbars */
+*:not(:last-child)::-webkit-scrollbar:horizontal {
+  display: none;
+}
+
+
+        *::-webkit-scrollbar-thumb:hover {
+          background-color: #555;
+        }
+
+        .navbar .navbar-toggler {
+      color: transparent;
+      border-color: transparent;
+    }
+
+
+ /* Custom CSS for chat messages */
+ .system-message {
+            background-color: #FFD7DB;
+            border-radius: 8px;
+        }
+
+        .user-message {
+            background-color: white;
+            border-radius: 8px;
+        }
+
+        .assistant-message {
+            background-color: rgba(247,247,248);
+            border-radius: 8px;
+        }
+        .message-avatar {
+  border-radius: 50%;
+  padding: 9px 3px;
+  position: relative; /* Changed from absolute to relative */
+}
+
+.user-avatar,
+.assistant-avatar {
+  background-color: none;
+  order: -1;
+  position: relative; /* Changed from absolute to relative */
+}
+
+.user-avatar img,
+.assistant-avatar img {
+  border-radius: 50%;
+  position: relative; /* Changed from absolute to relative */
+}
+
+
+        .chat-message {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .chat-content {
+            margin-left: 10px;
+        }
+
+        .new-chat-button{
+            width: 250px;
+            height: 38px;
+            border:  1px solid #ced4da;
+            border-radius: 8px;
+            text-align: left;
+            transition: ease 0.25s all;
+        }
+
+        .new-chat-button:hover {
+             background-color: rgba(247,247,248,0.1)
+        }
+
+        .new-chat-button span{
+             padding-left: 6px;
+             padding-right: 12px;
+        }
+
+        .form-select{
+            border-radius: 8px;
+            width: 300px;
+        }
+
+        .form-control {
+            position: fixed;
+            bottom: 20px;
+            width: 60%;
+            max-height: 200px;
+            height: 24px;
+            overflow-y: hidden;
+            right: 350px;
+            border-radius: 12px;
+            height: 45px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            align-items: center;
+        }
+
+        #send-button {
+            position: fixed;
+            bottom: 20px;
+            left: 1250px;
+            border-radius: 8px;
+            background-color: transparent;
+            border-color: transparent;
+        }
+
+        code {
+            border-radius: 12px;
+            width: 520px;
+            background-color: rgb(0, 0, 0);
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #343541;
+            width: 520px;
+            height: 30px;
+            border-radius: 12px;
+        }
+
+        .language-badge {
+            display: inline-block;
+            padding: 5px 8px;
+            border-radius: 8px;
+            margin-right: 10px;
+            width: 100px;
+            height: 30px;
+            background-color: #343541;
+            color: white;
+        }
+
+        .code-copy {
+            position: absolute;
+            top: -6px;
+            left: 453px;
+            margin: 6px;
+            padding: 6px 12px;
+            border-radius: 12px;
+            background-color: #343541;
+            height: 30px;
+            width: 50px;
+            border: none;
+            cursor: pointer;
+            color: white;
+            z-index: 1;
+        }
+
+        .code-container {
+    position: relative;
+    width: 100%; /* Change the width to 100% */
+    border-radius: 12px;
+}
+
+        body.darkmode {
+            background-color: #343541;
+            color: #fff;
+        }
+        body.darkmode .navbar {
+            background-color: #343541;
+            color: #fff;
+        }
+        body.darkmode .navbar .navbar-brand {
+            color: #fff;
+        }
+        body.darkmode .navbar .nav-link {
+            color: #fff;
+        }
+        body.darkmode .navbar-toggler {
+          color: transparent;
+          border-color: transparent;
+        }
+        body.darkmode .navbar-toggler .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+        body.darkmode .form-check-label {
+            color: #fff;
+        }
+        body.darkmode .new-chat-button{
+            border: 1px solid #fff;
+            color: #fff;
+        }
+        body.darkmode .new-chat-button:hover {
+             background-color: rgba(255, 255, 255, 0.1);
+        }
+        body.darkmode .navbar .nav-item .form-select{
+            color: #fff;
+            background-color: #343541;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23FFF' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+        }
+        body.darkmode .form-control{
+            color: #fff;
+            background-color: #343541;
+        }
+        body.darkmode .user-message{
+          background-color: #343541;
+          color: #fff;
+        }
+        body.darkmode .assistant-message{
+          background-color: #444654;
+          color: #fff;
+        }
+ /* CSS for small screens */
+@media (max-width: 576px) {
+    .form-control {
+        width: 80%;
+        right: 10px;
+        left: 10px;
+    }
+
+    #send-button {
+        left: 335px;
+    }
+
+    .code-copy {
+        left: 400px;
+    }
+
+    .code-container {
+        width: 100%;
+    }
+}
+
+/* CSS for medium screens */
+@media (min-width: 577px) and (max-width: 992px) {
+    .form-control {
+        width: 70%;
+        right: 50px;
+        left: 50px;
+    }
+
+    #send-button {
+        left: 50px;
+    }
+
+    .code-copy {
+        left: 430px;
+    }
+
+    .code-container {
+        width: 100%;
+    }
+}
+
+/* CSS for large screens */
+@media (min-width: 993px) {
+    .form-control {
+        width: 60%;
+        right: 350px;
+        left: initial;
+    }
+
+    #send-button {
+        left: 1250px;
+    }
+
+    .code-copy {
+        left: 453px;
+    }
+
+    .code-container {
+        width: 528px;
+    }
+}
+
+#download{
+    width: 300px;
+    height: 35px;
+    border-radius: 8px;
+}
+
+
+ h {
+  border-width: 0;
+  border-style: solid;
+  border-right-width: 10px;
+  height: 1px;
+  white-space: pre-wrap;
+  animation: cursorBlink 0.1s ease-in-out infinite alternate;
+}
+
+    @keyframes cursorBlink {
+      0% {
+        border-right-color: white;
+      }
+      to {
+        border-right-color: #343541;
+      }
+    }
+</style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <img class="OpenAI" src="{{ url_for('static', filename='OpenAI.png') }}" width="50" height="50">
+        OpenAI AI
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <form id="chat-form">
+              <select name="model" id="model" class="form-select">
+                {% for model in models %}
+                <option value="{{ model }}">{{ model }}</option>
+                {% endfor %}
+              </select>
+          </li>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <li class="nav-item">
+                <div onclick="new_chat()" class="btn new-chat-button" >
+                    <span>+</span>
+                    New Chat
+                </div>
+        </li>
+
+          <li class="nav-item">
+            <div class="form-group form-switch">
+              <a class="nav-link">
+                <input type="checkbox" class="form-check-input" id="darkModeSwitch">
+                <label class="form-check-label" for="darkModeSwitch">Dark</label>
+              </a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <hr>
+    <div id="chat-container">
+    </div>
+    <br>
+    <div class="input-container">
+        <div class="message-avatar user-avatar">
+        </div>
+        <textarea id="user-input" placeholder="Type your Message here..." class="form-control"></textarea>
+        <button type="submit" id="send-button">
+            <svg width="40" height="40" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fit="" style="fill: #007bff!important;"  preserveAspectRatio="xMidYMid meet" focusable="false"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2 .01 7z"></path></svg>
+        </button>
+    </div>
+  </form>
+    <input type="hidden" name="selected_model" id="selected_model">
+    <script>
+window.onload = function() {
+
+  // Other code...
+  // Retrieve saved dark mode status from local storage
+  var darkModeEnabled = localStorage.getItem("darkModeEnabled");
+  if (darkModeEnabled === "true") {
+    document.getElementById("darkModeSwitch").checked = true;
+    document.body.classList.add("darkmode");
+    $(".OpenAI").attr("src", "{{ url_for('static', filename='OpenAI Dark Mode.png') }}");
+  }
+
+  // Event listener for the dark mode switch
+  document.getElementById("darkModeSwitch").addEventListener("change", function() {
+    var darkModeEnabled = this.checked;
+    localStorage.setItem("darkModeEnabled", darkModeEnabled);
+
+    // Apply dark mode CSS to the body element
+    if (darkModeEnabled) {
+      document.body.classList.add("darkmode");
+      $(".OpenAI").attr("src", "{{ url_for('static', filename='OpenAI Dark Mode.png') }}");
+    } else {
+      document.body.classList.remove("darkmode");
+      $(".OpenAI").attr("src", "{{ url_for('static', filename='OpenAI.png') }}");
+    }
+
+  });
+
+  // Function to save the selected model to local storage
+  function saveSelectedModel() {
+    var selectedModel = document.getElementById("model").value;
+    localStorage.setItem("selectedModel", selectedModel);
+    document.getElementById("selected_model").value = selectedModel;
+  }
+
+  // Event listener for the model selection change
+  document.getElementById("model").addEventListener("change", function() {
+    saveSelectedModel(); // Call the function to save the selected model
+  });
+
+  // Retrieve saved selected model from local storage
+  var savedModel = localStorage.getItem("selectedModel");
+  if (savedModel) {
+    document.getElementById("model").value = savedModel;
+  }
+
+  saveSelectedModel(); // Call the function to save the selected model on window load
+};
+
+
+function new_chat() {
+        fetch('/new-chat', {
+            method: 'POST',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Clear the chat history container
+                document.getElementById('chat-container').innerHTML = '';
+            } else {
+                alert('Failed to clear chat history.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    // Load chat history from local storage on page load
+    window.addEventListener('load', function() {
+        var chatHistory = localStorage.getItem('chatHistory');
+        if (chatHistory) {
+            document.getElementById('chat-container').innerHTML = chatHistory;
+        }
+    });
+
+function addChatMessage(role, content) {
+  var className;
+  var avatarClass;
+  var avatarDiv;
+
+  if (role === "system") {
+    className = "system-message";
+    avatarClass = "";
+    avatarDiv = "";
+  } else if (role === "user") {
+    className = "user-message";
+    avatarClass = "user-avatar";
+    avatarDiv =
+      '<div class="message-avatar ' +
+      avatarClass +
+      '">&nbsp;<img src="{{ url_for("static", filename="User.png") }}" alt="User" width="35" height="35"></div>';
+  } else if (role === "assistant"){
+    className = "assistant-message";
+    avatarClass = "assistant-avatar";
+    avatarDiv =
+      '<div class="message-avatar ' +
+      avatarClass +
+      '">&nbsp;<img src="{{ url_for("static", filename="AI.png") }}" alt="AI" width="35" height="35"></div>';
+  }
+
+  var messageDiv = '<div class="chat-message ' + className + '">' +
+        avatarDiv +
+        '<div class="chat-content">'  +  '<br><p><span class="block">'  + content  +  '<br></span></p>' + '</div>' +
+        '</div>';
+
+    $("#chat-container").append(messageDiv);
+  }
+
+ document.getElementById("chat-form").addEventListener("submit", function(event) {
+  event.preventDefault();
+  var userInput = document.getElementById("user-input").value;
+  var selectedModel = document.getElementById("model").value;
+  addChatMessage("user", userInput);
+  document.getElementById("user-input").value = "";
+  Send(userInput, selectedModel);
+
+function Send() {
+  var formData = new FormData();
+  formData.append("user_input", userInput);
+  formData.append("model", selectedModel);
+
+  fetch("/Chat", {
+    method: "POST",
+    body: formData
+  })
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(data) {
+      var chatResponse = document.getElementById("chat-response");
+      if (chatResponse) {
+        chatResponse.innerHTML = data.response;
+        chatResponse.scrollIntoView({ behavior: "smooth" });
+      }
+
+      var highlightedContent = data.response.replace(
+        /```(\w+)\n([\s\S]*?)\n```/g,
+        function(match, p1, p2) {
+          var language = p1.toLowerCase();
+          var highlightedCode = hljs.highlight(language, p2).value;
+          return (
+            '<div class="code-container">' +
+            '<div class="code-header">' +
+            '<span class="language-badge">' +
+            language +
+            '</span>' +
+            '<button type="button" class="btn btn-secondary btn-sm code-copy">Copy</button>' +
+            '</div>' +
+            '<pre><code class="hljs">' +
+              highlightedCode +
+            '</code></pre>' +
+            '</div>'
+          );
+        }
+      ).replace(/```([\s\S]*?)```/g, function(match, p1) {
+        var highlightedCode = hljs.highlightAuto(p1).value;
+        return (
+          '<div class="code-container">' +
+          '<div class="code-header">' +
+          '<span class="language-badge"></span>' +
+          '<button type="button" class="btn btn-secondary btn-sm code-copy">Copy</button>' +
+          '</div>' +
+          '<pre><code class="hljs">' +
+          highlightedCode +
+          '</code></pre>' +
+          '</div>'
+        );
+      });
+
+      addChatMessage("assistant", highlightedContent);
+    })
+    .catch(function(error) {
+      var errorMessage = "Error: " + error.message;
+      var avatarClass = "assistant-avatar";
+      var avatarDiv =
+        '<div class="message-avatar ' +
+        avatarClass +
+        '">&nbsp;<img src="{{ url_for("static", filename="AI.png") }}" alt="AI" width="35" height="35"></div>';
+      addChatMessage("system", avatarDiv + errorMessage);
+    });
+}
+
+
+$(document).on("click", ".code-copy", function() {
+  var button = $(this);
+  var codeText = button.closest(".code-container").find("code").text();
+  copyToClipboard(codeText);
+
+  // Change button text to "Code Copied!"
+  button.text("Copied!");
+
+  // Change button text back to "Copy" after 3 seconds
+  setTimeout(function() {
+    button.text("Copy");
+  }, 3000);
+});
+
+function copyToClipboard(text) {
+  var input = document.createElement("textarea");
+  input.style.position = "fixed";
+  input.style.opacity = "0";
+  input.value = text;
+  document.body.appendChild(input);
+  input.select();
+  document.execCommand("Copy");
+  document.body.removeChild(input);
+}
+});
+
+document.getElementById("user-input").addEventListener("keydown", function(event) {
+                if (event.keyCode === 13) { // Check if Enter key is pressed
+                  event.preventDefault();
+  var userInput = document.getElementById("user-input").value;
+  var selectedModel = document.getElementById("model").value;
+  addChatMessage("user", userInput);
+  document.getElementById("user-input").value = "";
+  Send(userInput, selectedModel);
+  function Send() {
+  var formData = new FormData();
+  formData.append("user_input", userInput);
+  formData.append("model", selectedModel);
+
+  fetch("/Chat", {
+    method: "POST",
+    body: formData
+  })
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(data) {
+      var chatResponse = document.getElementById("chat-response");
+      if (chatResponse) {
+        chatResponse.innerHTML = data.response;
+        chatResponse.scrollIntoView({ behavior: "smooth" });
+      }
+
+      var highlightedContent = data.response.replace(
+        /```(\w+)\n([\s\S]*?)\n```/g,
+        function(match, p1, p2) {
+          var language = p1.toLowerCase();
+          var highlightedCode = hljs.highlight(language, p2).value;
+          return (
+            '<div class="code-container">' +
+            '<div class="code-header">' +
+            '<span class="language-badge">' +
+            language +
+            '</span>' +
+            '<button type="button" class="btn btn-secondary btn-sm code-copy">Copy</button>' +
+            '</div>' +
+            '<pre><code class="hljs">' +
+              highlightedCode +
+            '</code></pre>' +
+            '</div>'
+          );
+        }
+      ).replace(/```([\s\S]*?)```/g, function(match, p1) {
+        var highlightedCode = hljs.highlightAuto(p1).value;
+        return (
+          '<div class="code-container">' +
+          '<div class="code-header">' +
+          '<span class="language-badge"></span>' +
+          '<button type="button" class="btn btn-secondary btn-sm code-copy">Copy</button>' +
+          '</div>' +
+          '<pre><code class="hljs">' +
+          highlightedCode +
+          '</code></pre>' +
+          '</div>'
+        );
+      });
+      addChatMessage("assistant", highlightedContent);
+    })
+    .catch(function(error) {
+      var errorMessage = "Error: " + error.message;
+      var avatarClass = "assistant-avatar";
+      var avatarDiv =
+        '<div class="message-avatar ' +
+        avatarClass +
+        '">&nbsp;<img src="{{ url_for("static", filename="AI.png") }}" alt="AI" width="35" height="35"></div>';
+      addChatMessage("system", avatarDiv + errorMessage);
+    });
+}
+
+
+$(document).on("click", ".code-copy", function() {
+  var button = $(this);
+  var codeText = button.closest(".code-container").find("code").text();
+  copyToClipboard(codeText);
+
+  // Change button text to "Code Copied!"
+  button.text("Copied!");
+
+  // Change button text back to "Copy" after 3 seconds
+  setTimeout(function() {
+    button.text("Copy");
+  }, 3000);
+});
+
+function copyToClipboard(text) {
+  var input = document.createElement("textarea");
+  input.style.position = "fixed";
+  input.style.opacity = "0";
+  input.value = text;
+  document.body.appendChild(input);
+  input.select();
+  document.execCommand("Copy");
+  document.body.removeChild(input);
+}
+          }
+            });
+ // Handle dark mode switch
+ $("#darkModeSwitch").change(function() {
+        var darkMode = $(this).is(":checked");
+        if (darkMode) {
+            $("body").addClass("darkmode");
+        } else {
+            $("body").removeClass("darkmode");
+        }
+
+        // Change OpenAI image source
+        $(".OpenAI").attr("src", darkMode ? "{{ url_for('static', filename='OpenAI Dark Mode.png') }}" : "{{ url_for('static', filename='OpenAI.png') }}");
+    });
+
+    </script>
+</body>
+</html>
