@@ -1,1 +1,1 @@
-This is a ChatGPT Web App, it is a custom clone of ChatGPT i have made when i was 12 years old this project is only for personal use and should not be used to win money from it, thanks for respecting!, also make sure to leave a star 😉
+This is a ChatGPT Web App, it is a custom clone of ChatGPT i have made when i was 12 years old, i have no problem if anyone want to use the project for their own or make their own bussines with it, also make sure to leave a star 😉 so whe can become popular repository, thanks! 
