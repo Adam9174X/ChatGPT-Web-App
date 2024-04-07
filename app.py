@@ -19,12 +19,12 @@ def init_user_history():
 
 @app.route('/')
 def index():
-    return  render_template('home.html')
+    return  render_template('Home.html')
 
 # Error handling
 @app.errorhandler(Exception)
 def handle_error(error):
-    return render_template('error.html'), 500
+    return render_template('Error.html'), 500
 
 @app.route('/chat' , methods=['GET', 'POST'])
 def chat():
